@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // routes
 app.get("/", (req, res) => {
   return res.status(200).json({
-    message: "GG",
+    message: "app is delpoyed and tested",
   });
 });
 
