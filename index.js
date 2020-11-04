@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const app = express();
 require("dotenv").config();
 
+const userRoute = require("./routes/user");
+
 // db connection
 connectDB();
 
@@ -17,6 +19,8 @@ app.get("/", (req, res) => {
     message: "app is delpoyed and tested",
   });
 });
+
+app.use("/api/v1", userRoute);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
