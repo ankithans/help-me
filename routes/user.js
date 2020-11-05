@@ -3,13 +3,14 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 
+const auth = require("../middleware/auth");
 const User = require("../models/user");
 
 // @route       POST api/v1/users
 // @dsc         login a user
 // @access      Public
 router.post(
-  "/users",
+  "/",
   [
     check("name", "Please add a name").notEmpty(),
     check("phone", "Please include a valid number").isLength(10),
@@ -96,6 +97,44 @@ router.post(
     }
   }
 );
+
+// @route       GET api/v1/users/me
+// @dsc         get current logged in user
+// @access      Private
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    res.status(200).json({
+      success: true,
+      user: user,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+});
+
+// @route       GET api/users/:id
+// @dsc         get user with uid
+// @access      Public
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      user: user,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+});
 
 // router.get("/users", async (req, res) => {
 //   try {
