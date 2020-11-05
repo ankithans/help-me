@@ -5,6 +5,7 @@ const app = express();
 require("dotenv").config();
 
 const userRoute = require("./routes/user");
+const locationRoute = require("./routes/location");
 
 // db connection
 connectDB();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/location", locationRoute);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
