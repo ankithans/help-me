@@ -31,4 +31,41 @@ router.put(
   }
 );
 
+// @route       GET api/v1/location/users
+// @dsc         get near by users
+// @access      Private
+router.get("/users", auth, async (req, res) => {
+  const { longitude, latitude, distance } = req.body;
+  try {
+    await User.find({
+      location: {
+        $near: {
+          $maxDistance: distance,
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude],
+          },
+        },
+      },
+    }).find((error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(200).json({
+          success: false,
+          results: [],
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        results: results,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
+
 module.exports = router;
