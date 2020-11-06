@@ -29,6 +29,9 @@ dependencies:
   bloc: ^6.1.0
   flutter_bloc: ^6.0.6
   location: ^3.0.2
+  http: ^0.12.2
+  firebase_messaging: ^7.0.3
+  flutter_secure_storage: ^3.3.5
 
 
   # The following adds the Cupertino Icons font to your application.
