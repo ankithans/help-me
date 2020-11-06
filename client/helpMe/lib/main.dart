@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:helpMe/constants.dart';
 import 'package:helpMe/pages/auth/login/ui.dart';
 import 'package:helpMe/pages/home/ui.dart';
@@ -7,8 +9,46 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
+
+  void fcmListener(){
+    _firebaseMessaging.getToken().then((value) async {
+      await secureStorage.write(key: 'fcmToken', value: value);
+      print(value);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (message) async {
+        print('onMessage: $message');
+      },
+      onLaunch: (message) async {
+        print('onLaunch: $message');
+      },
+      onResume: (message) async {
+        print('onResume: $message');
+      },
+    );
+
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    fcmListener();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,7 +69,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
