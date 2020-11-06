@@ -6,6 +6,47 @@ const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
 const User = require("../models/user");
 
+// @route       POST api/v1/users/verify
+// @dsc         register a user
+// @access      Public
+router.post(
+  "/verify",
+  [check("phone", "Please include a valid number").isLength(10)],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    const { phone } = req.body;
+
+    try {
+      let user = await User.findOne({ phone });
+      if (user) {
+        res.status(409).json({
+          success: false,
+          error: `User with ${phone} already exists`,
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: `Successfully sent the Code to verify the Mobile Number ${phone}`,
+          code: "123456",
+        });
+      }
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({
+        success: false,
+        error: "Internal Server Error",
+      });
+    }
+  }
+);
+
 // @route       POST api/v1/users
 // @dsc         register a user
 // @access      Public
