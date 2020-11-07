@@ -29,9 +29,37 @@ class _MyAppState extends State<MyApp> {
       print(value);
     });
 
+    Widget _buildDialog(BuildContext context) {
+      return AlertDialog(
+        content: Text("Item  has been updated"),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('CLOSE'),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+          FlatButton(
+            child: const Text('SHOW'),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+          ),
+        ],
+      );
+    }
+
+    void _showItemDialog(Map<String, dynamic> message) {
+      showDialog(
+        context: context,
+        builder: (_) => _buildDialog(context),
+      );
+    }
+
     _firebaseMessaging.configure(
       onMessage: (message) async {
         print('onMessage: $message');
+        _showItemDialog(message);
         _showNotification(
             1234,
             "GET title FROM message OBJECT",
