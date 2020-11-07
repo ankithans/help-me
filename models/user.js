@@ -31,6 +31,12 @@ const UserSchema = mongoose.Schema({
     type: Map,
     required: false,
   },
+  notifications: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Notification",
+    },
+  ],
 });
 
 UserSchema.index({ location: "2dsphere" });

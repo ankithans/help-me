@@ -5,6 +5,7 @@ const { admin } = require("../services/firebase_config.js");
 
 const auth = require("../middleware/auth");
 const User = require("../models/user");
+const Notification = require("../models/notification");
 
 const notification_options = {
   priority: "high",
@@ -44,7 +45,12 @@ router.put(
 // @dsc         get near by users
 // @access      Private
 router.get("/users", auth, async (req, res) => {
+  var nearByUsers = [];
+  let user = await User.findById(req.user.id);
+
   const { longitude, latitude, distance } = req.body;
+  const lat = latitude.toString();
+  const long = longitude.toString();
   try {
     await User.find({
       location: {
@@ -65,6 +71,7 @@ router.get("/users", auth, async (req, res) => {
           results: [],
         });
       }
+      nearByUsers = results;
       // notifications logic
       for (var i = 0; i < results.length; i++) {
         const registrationToken = results[i].fcmToken;
@@ -77,12 +84,20 @@ router.get("/users", auth, async (req, res) => {
             body: `are help-me`,
           },
           // NOTE: The 'data' object is inside payload, not inside notification
+          data: {
+            long,
+            lat,
+          },
         };
 
         admin
           .messaging()
           .sendToDevice(registrationToken, payload, options)
           .then((response) => {
+            const notification = new Notification(payload.notification);
+
+            notification.data = user.location.coordinates;
+            console.log(notification);
             console.log(response);
           })
           .catch((error) => {
@@ -93,13 +108,26 @@ router.get("/users", auth, async (req, res) => {
             });
           });
       }
+    });
 
-      return res.status(200).json({
-        success: true,
-        results: results,
-      });
+    const phoneNumbers = Array.from(user.closeContacts.values());
+
+    // for (var i = 0; i < phoneNumbers.length; i++) {
+    //   client.messages
+    //     .create({
+    //       body:
+    //         "Message from Help-me! if you recieved it then ping on the group",
+    //       from: "+12058461985",
+    //       to: `+91${phoneNumbers[i]}`,
+    //     })
+    //     .then((message) => console.log(message.sid));
+    // }
+    return res.status(200).json({
+      success: true,
+      results: nearByUsers,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
