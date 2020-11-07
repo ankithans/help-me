@@ -214,7 +214,7 @@ router.post(
 );
 
 // @route       GET api/v1/users/getCloseContacts
-// @dsc         get close contacts of user
+// @dsc         get close contacts of user()family etc)
 // @access      Private
 router.get("/getCloseContact", auth, async (req, res) => {
   try {
