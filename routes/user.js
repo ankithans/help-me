@@ -221,16 +221,16 @@ router.get("/getCloseContact", auth, async (req, res) => {
     let user = await User.findById(req.user.id);
     const phoneNumbers = Array.from(user.closeContacts.values());
 
-    for (var i = 0; i < phoneNumbers.length; i++) {
-      client.messages
-        .create({
-          body:
-            "Message from Help-me! if you recieved it then ping on the group",
-          from: "+12058461985",
-          to: `+91${phoneNumbers[i]}`,
-        })
-        .then((message) => console.log(message.sid));
-    }
+    // for (var i = 0; i < phoneNumbers.length; i++) {
+    //   client.messages
+    //     .create({
+    //       body:
+    //         "Message from Help-me! if you recieved it then ping on the group",
+    //       from: "+12058461985",
+    //       to: `+91${phoneNumbers[i]}`,
+    //     })
+    //     .then((message) => console.log(message.sid));
+    // }
 
     res.status(200).json({
       success: true,
