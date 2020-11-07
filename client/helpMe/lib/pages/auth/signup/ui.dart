@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:helpMe/constants.dart';
 import 'package:helpMe/pages/auth/login/ui.dart';
+import 'package:location/location.dart';
+import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 //import 'package:helpMe/pages/auth/signup/services.dart';
 class SignUpPage extends StatefulWidget {
   @override
@@ -10,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   String _phone = null;
   String _name = null;
+  String _address = null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,14 +81,61 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: TextField(
+                keyboardType: TextInputType.streetAddress,
+                decoration: InputDecoration(
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(width: 2.0, color: primaryColor),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(width: 2.0, color: primaryColor),
+                  ),
+                  labelText: 'Address',
+                  labelStyle: TextStyle(
+                    color: primaryColor
+                  ),
+                ),
+                style: TextStyle(
+                  color: fontColor
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _address= value;
+                  });
+                },
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(25.0),
               child: RaisedButton(
                 child: Text('Sign Up'),
-                onPressed: (){
-                  if(_phone != null && _name != null){
+                onPressed: () async {
+                  if(_phone != null && _name != null && _address != null){
                     String phone = _phone.trim();
                     print(phone);
-                    //SignUpService().registerUser(context, phone: phone);
+                    Location _location = Location();
+                    var _locationData = await _location.getLocation();
+                    print('Latitude: ${_locationData.latitude}\nLongitude: ${_locationData.latitude}');
+                    if(_phone.length == 10){
+                      FlutterSecureStorage _storage = FlutterSecureStorage();
+                      var fcmToken = await _storage.read(key: 'fcmToken');
+                      print(fcmToken);
+                      var body = {
+                        'phone': _phone,
+                        'location': {
+                          'type': 'Point',
+                          'coordinates': [_locationData.longitude, _locationData.latitude],
+                        },
+                        'fcmToken': fcmToken,
+                      };
+                      print(body);
+                    }
+                  }
+                  else{
+                    Toast.show('Fill All Fields', context, gravity: Toast.TOP, duration: Toast.LENGTH_LONG);
                   }
                 },
                 shape: RoundedRectangleBorder(
