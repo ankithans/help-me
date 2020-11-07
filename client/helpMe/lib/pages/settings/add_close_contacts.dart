@@ -107,12 +107,14 @@ class _AddCloseContactsState extends State<AddCloseContacts> {
     token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWZhNjUzMDJjNWU4ZGM0NTU0MjQ1MzFhIn0sImlhdCI6MTYwNDczNTc0NiwiZXhwIjoxOTY0NzM1NzQ2fQ.i76UZ8DfWqfXHyGfknA5SLqeApOF4Y1qGgWo1D84DsE";
     try {
-      var response =
-          await http.post(api + "/api/v1/users/addCloseContact", headers: {
-        "x-auth-token": token,
-      }, body: jsonEncode({
-        "closeContacts": closeContacts
-      }));
+      var response = await http.post(
+        api + "/api/v1/users/addCloseContact",
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: json.encode({"closeContacts": closeContacts}),
+      );
       print(response.body);
       Fluttertoast.showToast(msg: "phone number added successfully");
       Navigator.pop(context);

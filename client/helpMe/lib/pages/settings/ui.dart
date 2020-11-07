@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:helpMe/constants.dart';
+import 'package:helpMe/pages/auth/signup/verify_phone.dart';
 import './add_close_contacts.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -8,6 +10,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +51,26 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             title: Text(
               'Add Close Contacts',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ),
+          ListTile(
+            onTap: () async {
+              await secureStorage.delete(key: "token");
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerifyPhone(),
+                ),
+              );
+            },
+            leading: Icon(
+              Icons.logout,
+              color: fontColor,
+            ),
+            title: Text(
+              'Logout',
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ),

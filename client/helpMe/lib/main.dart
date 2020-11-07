@@ -4,8 +4,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:helpMe/constants.dart';
-import 'package:helpMe/pages/auth/login/ui.dart';
+import 'package:helpMe/pages/auth/login/login.dart';
+import 'package:helpMe/pages/auth/signup/signup.dart';
+import 'package:helpMe/pages/auth/signup/verify_phone.dart';
 import 'package:helpMe/pages/home/ui.dart';
+import 'package:location/location.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   final flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  String token;
 
   void fcmListener() {
     _firebaseMessaging.getToken().then((value) async {
@@ -69,9 +73,55 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  void getLocation() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    print(_locationData);
+    await secureStorage.write(
+        key: 'longitude', value: _locationData.longitude.toString());
+    await secureStorage.write(
+        key: 'latitude', value: _locationData.latitude.toString());
+  }
+
+  void getToken() async {
+    token = await secureStorage.read(key: "token");
+    print(token);
+  }
+
+  Widget firstScreen() {
+    if (token == null) {
+      return VerifyPhone();
+    } else {
+      return HomePage();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getToken();
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -79,6 +129,8 @@ class _MyAppState extends State<MyApp> {
     var initializationSettings = new InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     FlutterLocalNotificationsPlugin().initialize(initializationSettings);
+
+    getLocation();
     fcmListener();
   }
 
@@ -99,7 +151,7 @@ class _MyAppState extends State<MyApp> {
               TextStyle(fontFamily: 'Nunito', color: fontColor, fontSize: 15.0),
         ),
       ),
-      home: HomePage(),
+      home: firstScreen(),
     );
   }
 }
