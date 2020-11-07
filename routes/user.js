@@ -183,7 +183,7 @@ router.post(
 );
 
 // @route       GET api/v1/users/addCloseContacts
-// @dsc         get current logged in user
+// @dsc         add close contacts of user
 // @access      Private
 router.post(
   "/addCloseContact",
@@ -208,6 +208,27 @@ router.post(
     }
   }
 );
+
+// @route       GET api/v1/users/getCloseContacts
+// @dsc         get close contacts of user
+// @access      Private
+router.get("/getCloseContact", auth, async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    const phoneNumbers = Array.from(user.closeContacts.values());
+
+    res.status(200).json({
+      success: true,
+      phoneNumbers: phoneNumbers,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+});
 
 // @route       GET api/v1/users/me
 // @dsc         get current logged in user
