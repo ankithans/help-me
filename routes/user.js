@@ -6,6 +6,10 @@ const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
 const User = require("../models/user");
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
+
 // @route       POST api/v1/users/verify
 // @dsc         register a user
 // @access      Public
@@ -181,6 +185,65 @@ router.post(
     }
   }
 );
+
+// @route       GET api/v1/users/addCloseContacts
+// @dsc         add close contacts of user
+// @access      Private
+router.post(
+  "/addCloseContact",
+  [check("closeContacts", "closeContacts is a type of map").exists()],
+  auth,
+  async (req, res) => {
+    const { closeContacts } = req.body;
+    try {
+      let user = await User.findById(req.user.id);
+      user.closeContacts = closeContacts;
+      await user.save();
+      res.status(200).json({
+        success: true,
+        user: user,
+      });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({
+        success: false,
+        error: "Internal Server Error",
+      });
+    }
+  }
+);
+
+// @route       GET api/v1/users/getCloseContacts
+// @dsc         get close contacts of user
+// @access      Private
+router.get("/getCloseContact", auth, async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    const phoneNumbers = Array.from(user.closeContacts.values());
+
+    for (var i = 0; i < phoneNumbers.length; i++) {
+      client.messages
+        .create({
+          body:
+            "Message from Help-me! if you recieved it then ping on the group",
+          from: "+12058461985",
+          to: `+91${phoneNumbers[i]}`,
+        })
+        .then((message) => console.log(message.sid));
+    }
+
+    res.status(200).json({
+      success: true,
+      phoneNumbers: phoneNumbers,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+});
 
 // @route       GET api/v1/users/me
 // @dsc         get current logged in user

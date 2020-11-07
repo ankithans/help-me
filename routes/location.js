@@ -66,25 +66,33 @@ router.get("/users", auth, async (req, res) => {
         });
       }
       // notifications logic
-      // for (var i = 0; i < results.length; i++) {
-      //   const registrationToken = results[i].fcmToken;
-      //   const message = "Help me";
-      //   const options = notification_options;
+      for (var i = 0; i < results.length; i++) {
+        const registrationToken = results[i].fcmToken;
+        const message = "Help me";
+        const options = notification_options;
 
-      //   admin
-      //     .messaging()
-      //     .sendToDevice(registrationToken, message, options)
-      //     .then((response) => {
-      //       console.log(response);
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //       return res.status(500).json({
-      //         success: false,
-      //         message: "failed to send notifications",
-      //       });
-      //     });
-      // }
+        const payload = {
+          notification: {
+            title: `Help Me`,
+            body: `are help-me`,
+          },
+          // NOTE: The 'data' object is inside payload, not inside notification
+        };
+
+        admin
+          .messaging()
+          .sendToDevice(registrationToken, payload, options)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(500).json({
+              success: false,
+              message: "failed to send notifications",
+            });
+          });
+      }
 
       return res.status(200).json({
         success: true,
