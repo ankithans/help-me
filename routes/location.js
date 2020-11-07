@@ -77,9 +77,6 @@ router.get("/users", auth, async (req, res) => {
             body: `are help-me`,
           },
           // NOTE: The 'data' object is inside payload, not inside notification
-          data: {
-            personSent: "userSent",
-          },
         };
 
         admin

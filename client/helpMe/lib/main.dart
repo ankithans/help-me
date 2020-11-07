@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:helpMe/constants.dart';
 import 'package:helpMe/pages/auth/login/ui.dart';
 import 'package:helpMe/pages/home/ui.dart';
@@ -56,15 +57,37 @@ class _MyAppState extends State<MyApp> {
       );
     }
 
+    Future<void> showNotification(String title, String body) async {
+      var androidChannelSpecifics = AndroidNotificationDetails(
+        'CHANNEL_ID',
+        'CHANNEL_NAME',
+        "CHANNEL_DESCRIPTION",
+        importance: Importance.max,
+        priority: Priority.high,
+        playSound: true,
+        timeoutAfter: 5000,
+        styleInformation: DefaultStyleInformation(true, true),
+      );
+      var iosChannelSpecifics = IOSNotificationDetails();
+      var platformChannelSpecifics = NotificationDetails(
+          android: androidChannelSpecifics, iOS: iosChannelSpecifics);
+      await flutterLocalNotificationsPlugin.show(
+        0, // Notification ID
+        title, // Notification Title
+        body, // Notification Body, set as null to remove the body
+        platformChannelSpecifics,
+        payload: 'New Payload', // Notification Payload
+      );
+    }
+
     _firebaseMessaging.configure(
       onMessage: (message) async {
         print('onMessage: $message');
-        // _showItemDialog(message);
-        _showNotification(
-            1234,
-            "GET title FROM message OBJECT",
-            "GET description FROM message OBJECT",
-            "GET PAYLOAD FROM message OBJECT");
+        Fluttertoast.showToast(msg: "$message");
+
+        showNotification(
+            message["notification"]["title"], message["notification"]["body"]);
+        _showItemDialog(message);
       },
       onLaunch: (message) async {
         print('onLaunch: $message');
@@ -75,60 +98,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<dynamic> onSelectNotification(String payload) async {
-    /*Do whatever you want to do on notification click. In this case, I'll show an alert dialog*/
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(payload),
-        content: Text("Payload: $payload"),
-      ),
-    );
-  }
-
-  Future<void> _showNotification(
-    int notificationId,
-    String notificationTitle,
-    String notificationContent,
-    String payload, {
-    String channelId = '1234',
-    String channelTitle = 'Android Channel',
-    String channelDescription = 'Default Android Channel for notifications',
-    Priority notificationPriority = Priority.high,
-    Importance notificationImportance = Importance.max,
-  }) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      channelId,
-      channelTitle,
-      channelDescription,
-      playSound: false,
-      importance: notificationImportance,
-      priority: notificationPriority,
-    );
-    var iOSPlatformChannelSpecifics =
-        new IOSNotificationDetails(presentSound: false);
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      notificationId,
-      notificationTitle,
-      notificationContent,
-      platformChannelSpecifics,
-      payload: payload,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
     fcmListener();
   }
 
@@ -137,16 +110,19 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          fontFamily: 'Nunito',
-          textTheme: TextTheme(
-              headline1: TextStyle(
-                  fontFamily: 'Nunito',
-                  color: primaryColor,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold),
-              bodyText1: TextStyle(
-                  fontFamily: 'Nunito', color: fontColor, fontSize: 15.0))),
-      home: LoginPage(),
+        fontFamily: 'Nunito',
+        textTheme: TextTheme(
+          headline1: TextStyle(
+            fontFamily: 'Nunito',
+            color: primaryColor,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyText1:
+              TextStyle(fontFamily: 'Nunito', color: fontColor, fontSize: 15.0),
+        ),
+      ),
+      home: HomePage(),
     );
   }
 }
