@@ -6,6 +6,10 @@ const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
 const User = require("../models/user");
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
+
 // @route       POST api/v1/users/verify
 // @dsc         register a user
 // @access      Public
@@ -216,6 +220,17 @@ router.get("/getCloseContact", auth, async (req, res) => {
   try {
     let user = await User.findById(req.user.id);
     const phoneNumbers = Array.from(user.closeContacts.values());
+
+    for (var i = 0; i < phoneNumbers.length; i++) {
+      client.messages
+        .create({
+          body:
+            "Message from Help-me! if you recieved it then ping on the group",
+          from: "+12058461985",
+          to: `+91${phoneNumbers[i]}`,
+        })
+        .then((message) => console.log(message.sid));
+    }
 
     res.status(200).json({
       success: true,
