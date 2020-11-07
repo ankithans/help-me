@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
     _firebaseMessaging.configure(
       onMessage: (message) async {
         print('onMessage: $message');
-        _showItemDialog(message);
+        // _showItemDialog(message);
         _showNotification(
             1234,
             "GET title FROM message OBJECT",

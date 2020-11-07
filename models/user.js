@@ -27,6 +27,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  closeContacts: {
+    type: Map,
+    required: false,
+  },
 });
 
 UserSchema.index({ location: "2dsphere" });
