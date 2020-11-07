@@ -30,33 +30,6 @@ class _MyAppState extends State<MyApp> {
       print(value);
     });
 
-    Widget _buildDialog(BuildContext context) {
-      return AlertDialog(
-        content: Text("Item  has been updated"),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text('CLOSE'),
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-          ),
-          FlatButton(
-            child: const Text('SHOW'),
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-          ),
-        ],
-      );
-    }
-
-    void _showItemDialog(Map<String, dynamic> message) {
-      showDialog(
-        context: context,
-        builder: (_) => _buildDialog(context),
-      );
-    }
-
     Future<void> showNotification(String title, String body) async {
       var androidChannelSpecifics = AndroidNotificationDetails(
         'CHANNEL_ID',
@@ -72,11 +45,10 @@ class _MyAppState extends State<MyApp> {
       var platformChannelSpecifics = NotificationDetails(
           android: androidChannelSpecifics, iOS: iosChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(
-        0, // Notification ID
+        1, // Notification ID
         title, // Notification Title
         body, // Notification Body, set as null to remove the body
         platformChannelSpecifics,
-        payload: 'New Payload', // Notification Payload
       );
     }
 
@@ -87,7 +59,6 @@ class _MyAppState extends State<MyApp> {
 
         showNotification(
             message["notification"]["title"], message["notification"]["body"]);
-        _showItemDialog(message);
       },
       onLaunch: (message) async {
         print('onLaunch: $message');
@@ -101,7 +72,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    FlutterLocalNotificationsPlugin().initialize(initializationSettings);
     fcmListener();
   }
 

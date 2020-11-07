@@ -214,11 +214,12 @@ router.post(
 );
 
 // @route       GET api/v1/users/getCloseContacts
-// @dsc         get close contacts of user
+// @dsc         get close contacts of user()family etc)
 // @access      Private
 router.get("/getCloseContact", auth, async (req, res) => {
   try {
     let user = await User.findById(req.user.id);
+
     const phoneNumbers = Array.from(user.closeContacts.values());
 
     // for (var i = 0; i < phoneNumbers.length; i++) {
@@ -264,9 +265,15 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // @route       GET api/users/:id
 // @dsc         get user with uid
 // @access      Public
+=======
+// // @route       GET api/users/:id
+// // @dsc         get user with uid
+// // @access      Public
+>>>>>>> f564c8c8259d80e5ea2d027d70dc2add5319dcc4
 // router.get("/:id", async (req, res) => {
 //   try {
 //     const user = await User.findById(req.params.id);
