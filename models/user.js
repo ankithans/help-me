@@ -33,8 +33,17 @@ const UserSchema = mongoose.Schema({
   },
   notifications: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Notification",
+      notification: {
+        title: {
+          type: String,
+          required: true,
+        },
+        body: {
+          type: String,
+          required: true,
+        },
+      },
+      data: {},
     },
   ],
 });

@@ -5,7 +5,7 @@ const { admin } = require("../services/firebase_config.js");
 
 const auth = require("../middleware/auth");
 const User = require("../models/user");
-const Notification = require("../models/notification");
+const user = require("../models/user");
 
 const notification_options = {
   priority: "high",
@@ -46,7 +46,8 @@ router.put(
 // @access      Private
 router.get("/users", auth, async (req, res) => {
   var nearByUsers = [];
-  let user = await User.findById(req.user.id);
+  var receiverIDs = [];
+  var notifData = {};
 
   const { longitude, latitude, distance } = req.body;
   const lat = latitude.toString();
@@ -71,9 +72,12 @@ router.get("/users", auth, async (req, res) => {
           results: [],
         });
       }
+
       nearByUsers = results;
       // notifications logic
       for (var i = 0; i < results.length; i++) {
+        let receiver = results[i].id;
+        console.log(receiver);
         const registrationToken = results[i].fcmToken;
         const message = "Help me";
         const options = notification_options;
@@ -89,16 +93,15 @@ router.get("/users", auth, async (req, res) => {
             lat,
           },
         };
+        notifData = payload;
+        receiverIDs.push(receiver);
 
         admin
           .messaging()
           .sendToDevice(registrationToken, payload, options)
           .then((response) => {
-            const notification = new Notification(payload.notification);
-
-            notification.data = user.location.coordinates;
-            console.log(notification);
-            console.log(response);
+            // console.log(notif);
+            // console.log(response);
           })
           .catch((error) => {
             console.log(error);
@@ -110,18 +113,30 @@ router.get("/users", auth, async (req, res) => {
       }
     });
 
-    const phoneNumbers = Array.from(user.closeContacts.values());
+    for (var i = 0; i < receiverIDs.length; i++) {
+      let recieverUser = await User.findById(receiverIDs[i]);
+      let prevNotif = recieverUser.notifications;
+      prevNotif.push(notifData);
+      await recieverUser.save();
+    }
 
-    // for (var i = 0; i < phoneNumbers.length; i++) {
-    //   client.messages
-    //     .create({
-    //       body:
-    //         "Message from Help-me! if you recieved it then ping on the group",
-    //       from: "+12058461985",
-    //       to: `+91${phoneNumbers[i]}`,
-    //     })
-    //     .then((message) => console.log(message.sid));
-    // }
+    if (user.closeContacts == undefined) {
+    } else {
+      const phoneNumbers = Array.from(user.closeContacts.values());
+
+      // for (var i = 0; i < phoneNumbers.length; i++) {
+      //   client.messages
+      //     .create({
+      //       body:
+      //         "Message from Help-me! if you recieved it then ping on the group",
+      //       from: "+12058461985",
+      //       to: `+91${phoneNumbers[i]}`,
+      //     })
+      //     .then((message) => console.log(message.sid));
+      // }
+    }
+
+    console.log(req.user.id);
     return res.status(200).json({
       success: true,
       results: nearByUsers,

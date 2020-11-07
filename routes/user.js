@@ -265,23 +265,23 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// // @route       GET api/users/:id
-// // @dsc         get user with uid
-// // @access      Public
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     res.status(200).json({
-//       success: true,
-//       user: user,
-//     });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).json({
-//       success: false,
-//       error: "Internal Server Error",
-//     });
-//   }
-// });
+// @route       GET api/users/:id
+// @dsc         get user with uid
+// @access      Public
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      user: user,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+});
 
 module.exports = router;
