@@ -35,8 +35,8 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {},
           color: primaryColor,
           child: Container(
-            height: 200.0,
-            width: 200.0,
+            height: 180.0,
+            width: 160.0,
             decoration: BoxDecoration(),
             child: FlareActor(
               'assets/images/alarm.flr',
