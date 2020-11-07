@@ -214,23 +214,24 @@ router.post(
 );
 
 // @route       GET api/v1/users/getCloseContacts
-// @dsc         get close contacts of user
+// @dsc         get close contacts of user()family etc)
 // @access      Private
 router.get("/getCloseContact", auth, async (req, res) => {
   try {
     let user = await User.findById(req.user.id);
+
     const phoneNumbers = Array.from(user.closeContacts.values());
 
-    for (var i = 0; i < phoneNumbers.length; i++) {
-      client.messages
-        .create({
-          body:
-            "Message from Help-me! if you recieved it then ping on the group",
-          from: "+12058461985",
-          to: `+91${phoneNumbers[i]}`,
-        })
-        .then((message) => console.log(message.sid));
-    }
+    // for (var i = 0; i < phoneNumbers.length; i++) {
+    //   client.messages
+    //     .create({
+    //       body:
+    //         "Message from Help-me! if you recieved it then ping on the group",
+    //       from: "+12058461985",
+    //       to: `+91${phoneNumbers[i]}`,
+    //     })
+    //     .then((message) => console.log(message.sid));
+    // }
 
     res.status(200).json({
       success: true,
@@ -264,23 +265,23 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// @route       GET api/users/:id
-// @dsc         get user with uid
-// @access      Public
-router.get("/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.status(200).json({
-      success: true,
-      user: user,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({
-      success: false,
-      error: "Internal Server Error",
-    });
-  }
-});
+// // @route       GET api/users/:id
+// // @dsc         get user with uid
+// // @access      Public
+// router.get("/:id", async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     res.status(200).json({
+//       success: true,
+//       user: user,
+//     });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({
+//       success: false,
+//       error: "Internal Server Error",
+//     });
+//   }
+// });
 
 module.exports = router;
