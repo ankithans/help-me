@@ -219,6 +219,7 @@ router.post(
 router.get("/getCloseContact", auth, async (req, res) => {
   try {
     let user = await User.findById(req.user.id);
+
     const phoneNumbers = Array.from(user.closeContacts.values());
 
     // for (var i = 0; i < phoneNumbers.length; i++) {
