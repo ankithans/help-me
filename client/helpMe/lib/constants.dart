@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 const api = 'https://help-mee.herokuapp.com';
 
 const backgroundColor = Color(0XFF212121);
@@ -9,8 +8,7 @@ const primaryColor = Color(0XFF32e0c4);
 
 const fontColor = Color(0XFFeeeeee);
 
-AppBar titleAppbar(
-  context,
+AppBar titleAppbar(context,
     {@required String title,
     List<Widget> actions,
     bool automaticallyImplyLeading = true,
@@ -18,7 +16,7 @@ AppBar titleAppbar(
     Widget leading}) {
   return AppBar(
     backgroundColor: backgroundColor,
-    elevation: 0,
+    elevation: 100,
     centerTitle: centerTitle,
     automaticallyImplyLeading: automaticallyImplyLeading,
     actions: actions != null ? actions : null,
