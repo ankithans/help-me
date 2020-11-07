@@ -36,11 +36,19 @@ class _VerifyPhoneState extends State<VerifyPhone> {
         body: json.encode({"phone": _phoneController.text}),
       );
       print(response.body);
-      Fluttertoast.showToast(msg: json.decode(response.body)["message"]);
-      setState(() {
-        showOtpTextBox = true;
-        loading = false;
-      });
+      if (json.decode(response.body)["success"] == false) {
+        setState(() {
+          showOtpTextBox = false;
+          loading = false;
+        });
+        Fluttertoast.showToast(msg: json.decode(response.body)["error"]);
+      } else {
+        Fluttertoast.showToast(msg: json.decode(response.body)["message"]);
+        setState(() {
+          showOtpTextBox = true;
+          loading = false;
+        });
+      }
       return VerifyMobile.fromJson(json.decode(response.body));
     } catch (e) {
       setState(() {

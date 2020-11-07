@@ -136,22 +136,27 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Nunito',
-        textTheme: TextTheme(
-          headline1: TextStyle(
+    return FutureBuilder(
+      future: secureStorage.read(key: "token"),
+      builder: (context, snapshot) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
             fontFamily: 'Nunito',
-            color: primaryColor,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                fontFamily: 'Nunito',
+                color: primaryColor,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+              bodyText1: TextStyle(
+                  fontFamily: 'Nunito', color: fontColor, fontSize: 15.0),
+            ),
           ),
-          bodyText1:
-              TextStyle(fontFamily: 'Nunito', color: fontColor, fontSize: 15.0),
-        ),
-      ),
-      home: firstScreen(),
+          home: firstScreen(),
+        );
+      },
     );
   }
 }

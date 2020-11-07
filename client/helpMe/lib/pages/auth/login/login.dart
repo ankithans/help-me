@@ -143,6 +143,9 @@ class _LoginState extends State<Login> {
                     obscureText: false,
                     textInputType: TextInputType.phone,
                   ),
+            SizedBox(
+              height: 5,
+            ),
             loading
                 ? Center(child: CircularProgressIndicator())
                 : Padding(
