@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:helpMe/constants.dart';
 import 'package:helpMe/pages/auth/signup/verify_phone.dart';
 import './add_close_contacts.dart';
-import 'package:http/http.dart' as http;
 
 class SettingsPage extends StatefulWidget {
   @override

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flare_flutter/flare_actor.dart';
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  bool enabled = true;
 
   void sendNotifications() async {
     String token = await secureStorage.read(key: "token");
@@ -26,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     data["distance"] = 1000;
     try {
       var response = await http.post(
-        "http://localhost:4000/api/v1/location/users",
+        api + "/api/v1/location/users",
         headers: {
           "x-auth-token": token,
           "Content-Type": "application/json; charset=UTF-8",
@@ -34,11 +36,25 @@ class _HomePageState extends State<HomePage> {
         body: json.encode(data),
       );
       print(response.body);
-      if (json.decode(response.body)["success"] == true)
+      if (json.decode(response.body)["success"] == true) {
         Fluttertoast.showToast(msg: "Notifications and sms sent successfully");
+        setState(() {
+          enabled = false;
+          Timer(Duration(seconds: 10), () {
+            setState(() {
+              enabled = true;
+            });
+          });
+        });
+      }
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -66,13 +82,11 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: RaisedButton(
-          onPressed: () {
-            sendNotifications();
-          },
+          onPressed: enabled ? sendNotifications : null,
           color: primaryColor,
           child: Container(
-            height: 180.0,
-            width: 160.0,
+            height: 160.0,
+            width: 140.0,
             decoration: BoxDecoration(),
             child: FlareActor(
               'assets/images/alarm.flr',
