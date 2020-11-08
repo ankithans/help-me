@@ -48,6 +48,7 @@ router.post("/users", auth, async (req, res) => {
   var nearByUsers = [];
   var receiverIDs = [];
   var notifData = {};
+  let user = await User.findById(req.user.id);
 
   const { longitude, latitude, distance } = req.body;
   const lat = latitude.toString();
@@ -85,7 +86,7 @@ router.post("/users", auth, async (req, res) => {
         const payload = {
           notification: {
             title: `Help Me`,
-            body: `are help-me`,
+            body: `someone in the distance ${distance} needs your help. To know his/her coordinates tap on the notification.`,
           },
           // NOTE: The 'data' object is inside payload, not inside notification
           data: {
@@ -127,8 +128,7 @@ router.post("/users", auth, async (req, res) => {
       for (var i = 0; i < phoneNumbers.length; i++) {
         client.messages
           .create({
-            body:
-              "Message from Help-me! if you recieved it then ping on the group",
+            body: `Message from Help-me! Your contact ${user.name} is in trouble. His coordinates are lat: ${latitude} long: ${longitude}`,
             from: "+12058461985",
             to: `+91${phoneNumbers[i]}`,
           })
