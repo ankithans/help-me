@@ -40,4 +40,7 @@
 - [workmanager](https://pub.dev/packages/workmanager)
 - [maps_launcher](https://pub.dev/packages/maps_launcher)
 
-
+## made with 💕 by: 
+- [Ankit Hans](https://github.com/ankithans)
+- [Sagnik Biswas](https://github.com/sbiswas2209)
+- [Harshit Singh](https://github.com/HarshitSingh27)
