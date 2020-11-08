@@ -17,6 +17,7 @@ class AddCloseContacts extends StatefulWidget {
 class _AddCloseContactsState extends State<AddCloseContacts> {
   final _nameController = new TextEditingController();
   final _phoneController = new TextEditingController();
+  bool hasData = false;
 
   _onAlertWithCustomContentPressed(context) {
     Alert(
@@ -83,13 +84,17 @@ class _AddCloseContactsState extends State<AddCloseContacts> {
   bool postLoading = false;
   Future<CloseContacts> getCloseContact() async {
     String token = await secureStorage.read(key: "token");
-    token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWZhNjUzMDJjNWU4ZGM0NTU0MjQ1MzFhIn0sImlhdCI6MTYwNDczNTc0NiwiZXhwIjoxOTY0NzM1NzQ2fQ.i76UZ8DfWqfXHyGfknA5SLqeApOF4Y1qGgWo1D84DsE";
     try {
       var response =
           await http.get(api + "/api/v1/users/getCloseContact", headers: {
         "x-auth-token": token,
       });
+      if (json.decode(response.body)["success"] == false) {
+        hasData = false;
+      } else {
+        hasData = true;
+      }
+
       print(response.body);
       return CloseContacts.fromJson(jsonDecode(response.body));
     } catch (e) {
@@ -104,8 +109,6 @@ class _AddCloseContactsState extends State<AddCloseContacts> {
         int.parse(_phoneController.text);
     print(closeContacts);
     String token = await secureStorage.read(key: "token");
-    token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWZhNjUzMDJjNWU4ZGM0NTU0MjQ1MzFhIn0sImlhdCI6MTYwNDczNTc0NiwiZXhwIjoxOTY0NzM1NzQ2fQ.i76UZ8DfWqfXHyGfknA5SLqeApOF4Y1qGgWo1D84DsE";
     try {
       var response = await http.post(
         api + "/api/v1/users/addCloseContact",
@@ -166,31 +169,33 @@ class _AddCloseContactsState extends State<AddCloseContacts> {
                 SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  height: 400,
-                  child: ListView.builder(
-                    itemCount: closeContacts.phoneNumbers.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        onTap: () {},
-                        leading: Icon(
-                          Icons.phone,
-                          color: Colors.white,
+                !hasData
+                    ? Container()
+                    : SizedBox(
+                        height: 400,
+                        child: ListView.builder(
+                          itemCount: closeContacts.phoneNumbers.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () {},
+                              leading: Icon(
+                                Icons.phone,
+                                color: Colors.white,
+                              ),
+                              // trailing: Text(
+                              //   "${closeContacts.phoneNumbers[index]}",
+                              //   style: TextStyle(
+                              //     color: primaryColor,
+                              //   ),
+                              // ),
+                              title: Text(
+                                "${closeContacts.phoneNumbers[index]}",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            );
+                          },
                         ),
-                        // trailing: Text(
-                        //   "${closeContacts.phoneNumbers[index]}",
-                        //   style: TextStyle(
-                        //     color: primaryColor,
-                        //   ),
-                        // ),
-                        title: Text(
-                          "${closeContacts.phoneNumbers[index]}",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
               ],
             ),
     );

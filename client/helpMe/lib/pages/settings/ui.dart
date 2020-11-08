@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:helpMe/constants.dart';
 import 'package:helpMe/pages/auth/signup/verify_phone.dart';
 import './add_close_contacts.dart';
+import 'package:http/http.dart' as http;
 
 class SettingsPage extends StatefulWidget {
   @override

@@ -41,10 +41,10 @@ router.put(
   }
 );
 
-// @route       GET api/v1/location/users
+// @route       POST api/v1/location/users
 // @dsc         get near by users
 // @access      Private
-router.get("/users", auth, async (req, res) => {
+router.post("/users", auth, async (req, res) => {
   var nearByUsers = [];
   var receiverIDs = [];
   var notifData = {};
