@@ -25,14 +25,14 @@
 
 
 ## Tech Stacks & dependencies
-###### 🤖 Backend
+##### 🤖 Backend
 - nodejs
 - Heroku [https://help-mee.herokuapp.com/](https://help-mee.herokuapp.com/)
   - documentation [https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7](https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7)
 - Firebase FCM
 - twilio
 
-###### 🌟 Frontend
+##### 🌟 Frontend
 - Flutter for cross-platform application
 - [location](https://pub.dev/packages/location)    
 - [http](https://pub.dev/packages/http)
