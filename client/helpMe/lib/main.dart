@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,12 +11,75 @@ import 'package:helpMe/pages/auth/signup/signup.dart';
 import 'package:helpMe/pages/auth/signup/verify_phone.dart';
 import 'package:helpMe/pages/home/ui.dart';
 import 'package:location/location.dart';
+import 'package:maps_launcher/maps_launcher.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
 }
 
+callBackDispatcher() async {
+    Workmanager.executeTask((taskName, inputData) async {
+      var result = await MyApp().getLocationData();
+
+      FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
+      var token = await _secureStorage.read(key: 'token');
+
+      if(token != null){
+
+        result.listen((event) async {
+          print('Event: $event');
+
+          var response = await http.put(
+            '$api/api/v1/location/update',
+            headers: <String , String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'x-auth-token': token
+            },
+            body: jsonEncode({
+              'location':{
+                'type': 'Point',
+                'coordinates': [event.longitude, event.latitude]
+              }
+            })
+          );
+
+          print(response.body.toString());
+          print(response.statusCode);
+
+        });
+
+      }
+
+      return Future.value(true);
+
+    });
+  }
+
+  getLocationData() async {
+    Location _location = Location();
+    var _locationData = await _location.getLocation();
+
+    return _locationData;
+
+  }
+
 class MyApp extends StatefulWidget {
+  Future<Stream<LocationData>> getLocationData() async {
+    Location _location = Location();
+
+    _location.changeSettings(
+      accuracy: LocationAccuracy.high,
+      interval: 500,
+      distanceFilter: 0.0001,
+    );
+
+    return _location.onLocationChanged;
+
+  }
+
   // This widget is the root of your application.
   @override
   _MyAppState createState() => _MyAppState();
@@ -60,14 +125,24 @@ class _MyAppState extends State<MyApp> {
       onMessage: (message) async {
         print('onMessage: $message');
         Fluttertoast.showToast(msg: "$message");
-
+        //var data = jsonDecode(message.toString());
+        
         showNotification(
             message["notification"]["title"], message["notification"]["body"]);
+            //print('Message: $data');
+        await MapsLauncher.launchCoordinates(double.parse(message['data']['lat']), double.parse(message['data']['long']), 'Distress Here!!');
+        //print(result);
       },
       onLaunch: (message) async {
+        var data = jsonDecode(message.toString());
+        print('Message: $data');
+        await MapsLauncher.launchCoordinates(double.parse(data['data']['lat']), double.parse(data['data']['long']), 'Distress Here!!');
         print('onLaunch: $message');
       },
       onResume: (message) async {
+        var data = jsonDecode(message.toString());
+        print('Message: $data');
+        await MapsLauncher.launchCoordinates(double.parse(data['data']['lat']), double.parse(data['data']['long']), 'Distress Here!!');
         print('onResume: $message');
       },
     );
@@ -118,10 +193,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  
+
+  
+
   @override
   void initState() {
     super.initState();
     getToken();
+    
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -136,6 +216,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    Workmanager.initialize(callBackDispatcher, isInDebugMode: true);
+    Workmanager.registerPeriodicTask("1", "get location");
     return FutureBuilder(
       future: secureStorage.read(key: "token"),
       builder: (context, snapshot) {

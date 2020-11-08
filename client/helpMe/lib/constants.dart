@@ -16,7 +16,7 @@ AppBar titleAppbar(context,
     Widget leading}) {
   return AppBar(
     backgroundColor: backgroundColor,
-    elevation: 100,
+    elevation: 0,
     centerTitle: centerTitle,
     automaticallyImplyLeading: automaticallyImplyLeading,
     actions: actions != null ? actions : null,
