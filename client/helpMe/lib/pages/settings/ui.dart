@@ -22,13 +22,13 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: titleAppbar(context, title: 'Settings'),
       body: ListView(
         children: [
-          ListTile(
-            leading: Icon(
-              Icons.info_outline,
-              color: fontColor,
-            ),
-            title: Text('Report', style: Theme.of(context).textTheme.bodyText1),
-          ),
+          // ListTile(
+          //   leading: Icon(
+          //     Icons.info_outline,
+          //     color: fontColor,
+          //   ),
+          //   title: Text('Report', style: Theme.of(context).textTheme.bodyText1),
+          // ),
           ListTile(
             leading: Icon(
               Icons.hardware,
