@@ -6,6 +6,7 @@
 - [Help-me apk](https://github.com/ankithans/help-me/releases/download/v1.0/app-armeabi-v7a-release.apk)
 - [Backend API](https://help-mee.herokuapp.com/)
 - [API documentation](https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7)
+- [video](https://vimeo.com/476800666)
 
 ## ❓ Problem Statement
 > Security is a major concern today. As sad this might sound, India or any part of the world for that matter cannot be called completely safe. And as such any cry for help should always get the proper response that the person needs. Thus, we bring forward helpMe. helpMe is our contribution towards a safer world where no one is alone and a step towards a much safer world.
@@ -35,9 +36,9 @@ Whenever in distress, press a button and this will automatically notify people n
 - do ```yarn``` in root directory
 - do ```flutter pub get``` in ```client/helpMe```
 - add firebase to your flutter project and firebaseadminsdk.json in your root directory
-- add mongodb URI in your .env
-- do ```yarn dev``` and your backend is up and running
-- do ```flutter run``` and your app will start with no issues
+- add MONGO_URI, JWT_SECRET, TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN in your .env
+- do ```yarn dev``` in the root directory and your backend is up and running
+- do ```flutter run``` in ```client/helpMe``` and your app will start with no issues
 
 ## Tech Stacks & dependencies
 ##### 🤖 Backend
