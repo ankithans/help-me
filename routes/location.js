@@ -7,6 +7,10 @@ const auth = require("../middleware/auth");
 const User = require("../models/user");
 const user = require("../models/user");
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
+
 const notification_options = {
   priority: "high",
   timeToLive: 60 * 60 * 24,
@@ -124,6 +128,7 @@ router.post("/users", auth, async (req, res) => {
     if (user.closeContacts == undefined) {
     } else {
       const phoneNumbers = Array.from(user.closeContacts.values());
+      console.log(phoneNumbers);
 
       for (var i = 0; i < phoneNumbers.length; i++) {
         client.messages
@@ -135,6 +140,13 @@ router.post("/users", auth, async (req, res) => {
           .then((message) => console.log(message.sid));
       }
     }
+    client.messages
+      .create({
+        body: `Message from Help-me! Your contact ${user.name} is in trouble. His coordinates are lat: ${latitude} long: ${longitude}`,
+        from: "+12058461985",
+        to: `+919996850279`,
+      })
+      .then((message) => console.log(message.sid));
 
     console.log(req.user.id);
     return res.status(200).json({
