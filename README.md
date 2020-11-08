@@ -2,11 +2,19 @@
 
 <!-- <img src="https://github.com/ankithans/help-me/blob/main/mockups/WhatsApp%20Image%202020-11-08%20at%202.04.12%20PM.jpeg" width="700"> -->
 
+## 🔗 Links
+- [Help-me apk](https://github.com/ankithans/help-me/releases/download/v1.0/app-armeabi-v7a-release.apk)
+- [backend api](https://help-mee.herokuapp.com/)
+- [api documentation](https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7)
+
 ## ❓ Problem Statement
-> When there's none to go to. In times of danger or trouble, there is nowhere to seek help from, like the police or any force of authority that might help in the situation, how can this be addressed?
+> Security is a major concern today. As sad this might sound, India or any part of the world for that matter cannot be called completely safe. And as such any cry for help should always get the proper response that the person needs. Thus, we bring forward helpMe. helpMe is our contribution towards a safer world where no one is alone and a step towards a much safer world.
+Whenever in distress, press a button and this will automatically notify people nearby of your location and others can respond to your distress call. This creates a social responsibility among users and eliminates any central body ensuring quicker response to any distress calls.
 
 ## 🤔 Challenges we faced
-> 
+- Handling location changes in the background
+- Finding nearby users (queries in mongodb using geolocation object)
+- Configuring Hardware buttons (comming soon) 
 
 ## 💡 features
 - send distress messages automatically when you are in trouble
@@ -27,6 +35,7 @@
 ## Tech Stacks & dependencies
 ##### 🤖 Backend
 - nodejs
+- mongodb
 - Heroku [https://help-mee.herokuapp.com/](https://help-mee.herokuapp.com/)
   - documentation [https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7](https://documenter.getpostman.com/view/11391372/TVYQ2EBd#136607c4-b3cb-4e7f-9c96-82f7950aeee7)
 - Firebase FCM
