@@ -30,7 +30,14 @@ Whenever in distress, press a button and this will automatically notify people n
 
 <img src="https://github.com/ankithans/help-me/blob/main/mockups/6.jpeg" width="250"> &nbsp;&nbsp;&nbsp;&nbsp; <img src="https://github.com/ankithans/help-me/blob/main/mockups/7.jpeg" width="250" style="float:right"> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <img src="https://github.com/ankithans/help-me/blob/main/mockups/8.jpeg" width="250">
 
-
+## 👣 steps to run the project
+- clone the repo in your local machine
+- do ```yarn``` in root directory
+- do ```flutter pub get``` in ```client/helpMe```
+- add firebase to your flutter project and firebaseadminsdk.json in your root directory
+- add mongodb URI in your .env
+- do ```yarn dev``` and your backend is up and running
+- do ```flutter run``` and your app will start with no issues
 
 ## Tech Stacks & dependencies
 ##### 🤖 Backend
