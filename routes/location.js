@@ -124,16 +124,16 @@ router.post("/users", auth, async (req, res) => {
     } else {
       const phoneNumbers = Array.from(user.closeContacts.values());
 
-      // for (var i = 0; i < phoneNumbers.length; i++) {
-      //   client.messages
-      //     .create({
-      //       body:
-      //         "Message from Help-me! if you recieved it then ping on the group",
-      //       from: "+12058461985",
-      //       to: `+91${phoneNumbers[i]}`,
-      //     })
-      //     .then((message) => console.log(message.sid));
-      // }
+      for (var i = 0; i < phoneNumbers.length; i++) {
+        client.messages
+          .create({
+            body:
+              "Message from Help-me! if you recieved it then ping on the group",
+            from: "+12058461985",
+            to: `+91${phoneNumbers[i]}`,
+          })
+          .then((message) => console.log(message.sid));
+      }
     }
 
     console.log(req.user.id);
