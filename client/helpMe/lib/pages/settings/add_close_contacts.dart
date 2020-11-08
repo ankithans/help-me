@@ -27,7 +27,7 @@ class _AddCloseContactsState extends State<AddCloseContacts> {
           titleStyle: TextStyle(color: Colors.white, fontSize: 20),
         ),
         context: context,
-        title: "LOGIN",
+        title: "Add contact",
         content: Column(
           children: <Widget>[
             TextField(
