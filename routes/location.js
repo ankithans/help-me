@@ -133,7 +133,7 @@ router.post("/users", auth, async (req, res) => {
       for (var i = 0; i < phoneNumbers.length; i++) {
         client.messages
           .create({
-            body: `Message from Help-me! Your contact ${user.name} is in trouble. His coordinates are lat: ${latitude} long: ${longitude}`,
+            body: `Message from Help-me! Your contact ${user.name} is in trouble. His/Her coordinates are lat: ${latitude} long: ${longitude}`,
             from: "+12058461985",
             to: `+91${phoneNumbers[i]}`,
           })
